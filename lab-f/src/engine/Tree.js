@@ -69,21 +69,4 @@ export class Tree {
     }
     return result.reverse();
   }
-
-  generate_dot(node, dot) {
-    // if node is not None:
-    //     dot.node(str(id(node)), node.data)
-    //     if node.left is not None:
-    //         dot.edge(str(id(node)), str(id(node.left)))
-    //         this.generate_dot(node.left, dot)
-    //     if node.right is not None:
-    //         dot.edge(str(id(node)), str(id(node.right)))
-    //         this.generate_dot(node.right, dot)
-  }
-
-  print_tree(node, level) {
-    // dot = Digraph()
-    // this.generate_dot(this.root, dot)
-    // dot.render('tree.gv', view=True)
-  }
 }
