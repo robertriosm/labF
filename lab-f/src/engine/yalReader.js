@@ -169,122 +169,121 @@ export class YalReader {
     }
 
     for (const f of funciones) {
-            deletable_array = []
-            temporal_array = []
-            nombre, definicion = f.split("=")
-            nombre = nombre.trim()
-            definicion = definicion.trim()
-            temporal_array.push(nombre)
-            word= ""
-            // realizar revision para a definicion
-            if definicion[0] == "[":
-                definicion = definicion.slice(1, definicion.length - 1)
-                for x in definicion:
-                    word+=x
-                    if word[0] == '"' or word[0] == "'":
-                        if word.count("'") == 2:
-                            word = word.slice(1, word.length - 1)
-                            // estos son los que tienen \
-                            if len(word) == 2:
-                                if word == "\s":
-                                    word = bytes(' ', 'utf-8').decode('unicode_escape')
-                                else:
-                                    word = bytes(word, 'utf-8').decode('unicode_escape')
-                                deletable_array.push(ord(word))
-                            // esto son los que no tienen \
-                            else:
-                                if word == " ":
-                                    word = bytes(' ', 'utf-8').decode('unicode_escape')
-                                    deletable_array.push(ord(word))
-                                else:
-                                    deletable_array.push(ord(word))
-                            word = ""
-                        if word.count('"') == 2:
-                            //  si tiene \ o no tiene dependiendo de este se trabajara conforme a ello
-                            word = word.slice(1, word.length - 1)
-                            temporary_word = ""
-                            // si tiene \ en word
-                            if chr(92) in word:
-                                for y in word:
-                                    temporary_word+=y
-                                    if temporary_word.count(chr(92)) == 2:
-                                        if temporary_word[:-1] == "\s":
-                                            temp_word = ' '
-                                        else:
-                                            temp_word = temporary_word[:-1]
-                                        word = bytes(temp_word, 'utf-8').decode('unicode_escape')
-                                        deletable_array.push(ord(word))
-                                        temporary_word = temporary_word[2:]
-                                if len(temporary_word) != 0:
-                                    if temporary_word == "\s":
-                                        temp_word = ' '
-                                    else:
-                                        temp_word = temporary_word
-                                    word = bytes(temp_word, 'utf-8').decode('unicode_escape')
-                                    deletable_array.push(ord(word))
-                            else:
-                                word = list(word)
-                                for w in range(len(word)):
-                                    word[w] = ord(word[w])
-                                deletable_array.extend(word)
-                                
-                    else:
-                        deletable_array.push(word)
-                        word = ""
-                
-            else:
-                tokens = []
-                token_actual = ""
-                
-                for caracter in definicion:
-                    if "]" in token_actual:
-                        palabra = ""
-                        array = []
-                        array.push("(")
-                        
-                        token_actual = token_actual.slice(1, token_actual.length - 1)
-                        for tok in token_actual:
-                            palabra += tok
-                            if palabra.count("'") == 2:
-                                palabra = ord(palabra.slice(1, palabra.length - 1))
-                                array.push(palabra)
-                                array.push("|")
-                                palabra = ""
-                        array[len(array)-1] = ")"
-                        tokens.extend(array)
-                        token_actual = ""
-                    
-                    if token_actual.count("'") == 2:
-                        if "[" not in token_actual: 
-                            token_actual = ord(token_actual.slice(1, token_actual.length - 1))
-                            tokens.push(token_actual)
-                            token_actual = ""
-                    
-                    if caracter in ("(", ")", "*", "?", "+", "|","."):
-                        if "'" not in token_actual:
-                            if token_actual:
-                                if len(token_actual) == 1:
-                                    token_actual = ord(token_actual)
-                                tokens.push(token_actual)
-                                token_actual = ""
-                            if caracter == ".":
-                                caracter = ord(caracter)
-                            tokens.push(caracter)
-                        else:
-                            token_actual += caracter.trim()
-                    else:
-                        token_actual += caracter.trim()
-                if token_actual:
-                    tokens.push(token_actual)
-                
-                deletable_array.extend(tokens)
-                
-            temporal_array.push(deletable_array)
-            
-            // agregar temporal array a funciones
-            filter_funciones.push(temporal_array)
-    }
+      let deletable_array = [];
+      let temporal_array = [];
+      nombre, (definicion = f.split("="));
+      nombre = nombre.trim();
+      definicion = definicion.trim();
+      temporal_array.push(nombre);
+      word = "";
+      // realizar revision para a definicion
+      // if definicion[0] == "[":
+      //     definicion = definicion.slice(1, definicion.length - 1)
+      //     for x in definicion:
+      //         word+=x
+      //         if word[0] == '"' or word[0] == "'":
+      //             if word.count("'") == 2:
+      //                 word = word.slice(1, word.length - 1)
+      //                 // estos son los que tienen \
+      //                 if len(word) == 2:
+      //                     if word == "\s":
+      //                         word = bytes(' ', 'utf-8').decode('unicode_escape')
+      //                     else:
+      //                         word = bytes(word, 'utf-8').decode('unicode_escape')
+      //                     deletable_array.push(ord(word))
+      //                 // esto son los que no tienen \
+      //                 else:
+      //                     if word == " ":
+      //                         word = bytes(' ', 'utf-8').decode('unicode_escape')
+      //                         deletable_array.push(ord(word))
+      //                     else:
+      //                         deletable_array.push(ord(word))
+      //                 word = ""
+      //             if word.count('"') == 2:
+      //                 //  si tiene \ o no tiene dependiendo de este se trabajara conforme a ello
+      //                 word = word.slice(1, word.length - 1)
+      //                 temporary_word = ""
+      //                 // si tiene \ en word
+      //                 if chr(92) in word:
+      //                     for y in word:
+      //                         temporary_word+=y
+      //                         if temporary_word.count(chr(92)) == 2:
+      //                             if temporary_word[:-1] == "\s":
+      //                                 temp_word = ' '
+      //                             else:
+      //                                 temp_word = temporary_word[:-1]
+      //                             word = bytes(temp_word, 'utf-8').decode('unicode_escape')
+      //                             deletable_array.push(ord(word))
+      //                             temporary_word = temporary_word[2:]
+      //                     if len(temporary_word) != 0:
+      //                         if temporary_word == "\s":
+      //                             temp_word = ' '
+      //                         else:
+      //                             temp_word = temporary_word
+      //                         word = bytes(temp_word, 'utf-8').decode('unicode_escape')
+      //                         deletable_array.push(ord(word))
+      //                 else:
+      //                     word = list(word)
+      //                     for w in range(len(word)):
+      //                         word[w] = ord(word[w])
+      //                     deletable_array.extend(word)
 
+      //         else:
+      //             deletable_array.push(word)
+      //             word = ""
+
+      // else:
+      //     tokens = []
+      //     token_actual = ""
+
+      //     for caracter in definicion:
+      //         if "]" in token_actual:
+      //             palabra = ""
+      //             array = []
+      //             array.push("(")
+
+      //             token_actual = token_actual.slice(1, token_actual.length - 1)
+      //             for tok in token_actual:
+      //                 palabra += tok
+      //                 if palabra.count("'") == 2:
+      //                     palabra = ord(palabra.slice(1, palabra.length - 1))
+      //                     array.push(palabra)
+      //                     array.push("|")
+      //                     palabra = ""
+      //             array[len(array)-1] = ")"
+      //             tokens.extend(array)
+      //             token_actual = ""
+
+      //         if token_actual.count("'") == 2:
+      //             if "[" not in token_actual:
+      //                 token_actual = ord(token_actual.slice(1, token_actual.length - 1))
+      //                 tokens.push(token_actual)
+      //                 token_actual = ""
+
+      //         if caracter in ("(", ")", "*", "?", "+", "|","."):
+      //             if "'" not in token_actual:
+      //                 if token_actual:
+      //                     if len(token_actual) == 1:
+      //                         token_actual = ord(token_actual)
+      //                     tokens.push(token_actual)
+      //                     token_actual = ""
+      //                 if caracter == ".":
+      //                     caracter = ord(caracter)
+      //                 tokens.push(caracter)
+      //             else:
+      //                 token_actual += caracter.trim()
+      //         else:
+      //             token_actual += caracter.trim()
+      //     if token_actual:
+      //         tokens.push(token_actual)
+
+      //     deletable_array.extend(tokens)
+
+      // temporal_array.push(deletable_array)
+
+      // // agregar temporal array a funciones
+      // filter_funciones.push(temporal_array)
+    }
   }
 }
 
